@@ -93,8 +93,7 @@ public class OverlappingWFCModel extends WFCModel {
                 }
                 changes[x][FMY - 1] = true;
 
-                for (int y = 0; y < FMY - 1; y++)
-                {
+                for (int y = 0; y < FMY - 1; y++) {
                     wave[x][y][foundation] = false;
                     changes[x][y] = true;
                 }

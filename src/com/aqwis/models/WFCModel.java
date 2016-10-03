@@ -2,6 +2,7 @@ package com.aqwis.models;
 
 import java.awt.image.BufferedImage;
 import java.util.Random;
+import java.util.stream.DoubleStream;
 
 /**
  * Created by trygvewiig on 03/10/16.
@@ -84,7 +85,7 @@ public abstract class WFCModel {
             distribution[t] = wave[argminx][argminy][t] ? stationary[t]: 0;
         }
 
-        int r = random.nextInt(distribution.length);
+        int r = randomChoice(distribution, random.nextDouble());
         for (int t = 0; t < T; t++) {
             wave[argminx][argminy][t] = t == r;
         }
@@ -129,4 +130,32 @@ public abstract class WFCModel {
 
     protected abstract boolean onBoundary(int x, int y);
     public abstract BufferedImage graphics();
+
+    public static int randomChoice(double[] a, double r)
+    {
+        double sum = DoubleStream.of(a).sum();
+
+        if (sum == 0)
+        {
+            for (int j = 0; j < a.length; j++) {
+                a[j] = 1;
+            }
+            sum = a.length;
+        }
+
+        for (int j = 0; j < a.length; j++) {
+            a[j] /= sum;
+        }
+
+        int i = 0;
+        double x = 0;
+
+        while (i < a.length) {
+            x += a[i];
+            if (r <= x) return i;
+            i++;
+        }
+
+        return 0;
+    }
 }
