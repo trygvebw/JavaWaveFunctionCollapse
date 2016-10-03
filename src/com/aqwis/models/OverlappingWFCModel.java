@@ -196,9 +196,7 @@ public class OverlappingWFCModel extends WFCModel {
             return result;
         };
 
-        BiFunction<Integer, Integer, Byte[]> patternFromSample = (x, y) -> {
-            pattern.apply((dx, dy) -> sample[(x+dx) % SMX][(y+dy) % SMY]);
-        };
+        BiFunction<Integer, Integer, Byte[]> patternFromSample = (x, y) -> pattern.apply((dx, dy) -> sample[(x+dx) % SMX][(y+dy) % SMY]);
 
         Function<Byte[], Byte[]> rotate = p -> pattern.apply((x, y) -> p[N-1-y+x*N]);
         Function<Byte[], Byte[]> reflect = p -> pattern.apply((x, y) -> p[N-1-x+y*N]);
@@ -215,7 +213,7 @@ public class OverlappingWFCModel extends WFCModel {
         Function<Integer, Byte[]> patternFromIndex = ind -> {
             int residue = ind;
             int power = W;
-            byte[] result = new byte[N*N];
+            Byte[] result = new Byte[N*N];
 
             for (int i = 0; i < result.length; i++) {
                 power /= C;

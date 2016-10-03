@@ -40,8 +40,10 @@ public abstract class WFCModel {
                 sum = 0;
 
                 for (int t = 0; t < T; t++) {
-                    amount++;
-                    sum += stationary[t];
+                    if (wave[x][y][t]) {
+                        amount++;
+                        sum += stationary[t];
+                    }
                 }
 
                 if (sum == 0) {

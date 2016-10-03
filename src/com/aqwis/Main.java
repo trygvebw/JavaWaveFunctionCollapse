@@ -23,9 +23,9 @@ public class Main {
     private static Document document;
     private static WFCModel wfcModel;
 
-    private static Boolean attributeFromString(String value, Boolean defaultValue) { return value == null ? defaultValue : Boolean.parseBoolean(value); }
-    private static Integer attributeFromString(String value, Integer defaultValue) { return value == null ? defaultValue : Integer.parseInt(value); }
-    private static String attributeFromString(String value, String defaultValue) { return value == null ? defaultValue : value; }
+    private static Boolean attributeFromString(Node item, Boolean defaultValue) { return item == null ? defaultValue : Boolean.parseBoolean(item.getNodeValue()); }
+    private static Integer attributeFromString(Node item, Integer defaultValue) { return item == null ? defaultValue : Integer.parseInt(item.getNodeValue()); }
+    private static String attributeFromString(Node item, String defaultValue) { return item == null ? defaultValue : item.getNodeValue(); }
 
     public static void main(String[] args) {
         Random random = new Random();
@@ -51,38 +51,38 @@ public class Main {
             if (nodeName.equals("overlapping")) {
                 wfcModel = new OverlappingWFCModel(
                         attributes.getNamedItem("name").getNodeValue(),
-                        attributeFromString(attributes.getNamedItem("N").getNodeValue(), 2),
-                        attributeFromString(attributes.getNamedItem("width").getNodeValue(), 48),
-                        attributeFromString(attributes.getNamedItem("height").getNodeValue(), 48),
-                        attributeFromString(attributes.getNamedItem("periodicInput").getNodeValue(), true),
-                        attributeFromString(attributes.getNamedItem("periodic").getNodeValue(), false),
-                        attributeFromString(attributes.getNamedItem("symmetry").getNodeValue(), 8),
-                        attributeFromString(attributes.getNamedItem("foundation").getNodeValue(), 0)
+                        attributeFromString(attributes.getNamedItem("N"), 2),
+                        attributeFromString(attributes.getNamedItem("width"), 48),
+                        attributeFromString(attributes.getNamedItem("height"), 48),
+                        attributeFromString(attributes.getNamedItem("periodicInput"), true),
+                        attributeFromString(attributes.getNamedItem("periodic"), false),
+                        attributeFromString(attributes.getNamedItem("symmetry"), 8),
+                        attributeFromString(attributes.getNamedItem("foundation"), 0)
                         );
             } else if (nodeName.equals("simpletiled")) {
                 wfcModel = new SimpleTiledWFCModel(
                         attributes.getNamedItem("name").getNodeValue(),
                         attributes.getNamedItem("subset").getNodeValue(),
-                        attributeFromString(attributes.getNamedItem("width").getNodeValue(), 10),
-                        attributeFromString(attributes.getNamedItem("height").getNodeValue(), 10),
-                        attributeFromString(attributes.getNamedItem("periodic").getNodeValue(), false),
-                        attributeFromString(attributes.getNamedItem("black").getNodeValue(), false)
+                        attributeFromString(attributes.getNamedItem("width"), 10),
+                        attributeFromString(attributes.getNamedItem("height"), 10),
+                        attributeFromString(attributes.getNamedItem("periodic"), false),
+                        attributeFromString(attributes.getNamedItem("black"), false)
                 );
             } else {
                 continue;
             }
 
-            for (int j = 0; j < attributeFromString(attributes.getNamedItem("screenshots").getNodeValue(), 2); j++) {
+            for (int j = 0; j < attributeFromString(attributes.getNamedItem("screenshots"), 2); j++) {
                 for (int k = 0; k < 10; k++) {
                     System.out.print("> ");
                     int seed = (int) random.nextLong(); // risky?
-                    boolean finished = wfcModel.run(seed, attributeFromString(attributes.getNamedItem("limit").getNodeValue(), 0));
+                    boolean finished = wfcModel.run(seed, attributeFromString(attributes.getNamedItem("limit"), 0));
 
                     if (finished) {
                         System.out.println("DONE");
 
                         BufferedImage graphics = wfcModel.graphics();
-                        File file = new File(String.format("%d %s %d", outerCounter, attributes.getNamedItem("name").getNodeValue(), j));
+                        File file = new File(String.format("%d %s %d.bmp", outerCounter, attributes.getNamedItem("name").getNodeValue(), j));
                         try {
                             ImageIO.write(graphics, "bmp", file);
                         } catch (IOException e) {
