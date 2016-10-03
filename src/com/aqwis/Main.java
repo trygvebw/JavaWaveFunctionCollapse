@@ -35,7 +35,7 @@ public class Main {
         try {
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
             document = docBuilder.parse(xmlFile);
-            document.getDocumentElement().normalize();
+            //document.getDocumentElement().normalize();
         } catch (Exception e) {
             e.printStackTrace();
             exit();
@@ -47,6 +47,12 @@ public class Main {
             Node node = nodeList.item(i);
             NamedNodeMap attributes = node.getAttributes();
             String nodeName = node.getNodeName();
+
+            if (nodeName.equals("#text") || nodeName.equals("#comment")) {
+                continue;
+            }
+
+            System.out.println(String.format("< %s", attributes.getNamedItem("name").getNodeValue()));
 
             if (nodeName.equals("overlapping")) {
                 wfcModel = new OverlappingWFCModel(
@@ -75,7 +81,7 @@ public class Main {
             for (int j = 0; j < attributeFromString(attributes.getNamedItem("screenshots"), 2); j++) {
                 for (int k = 0; k < 10; k++) {
                     System.out.print("> ");
-                    int seed = (int) random.nextLong(); // risky?
+                    int seed = random.nextInt();
                     boolean finished = wfcModel.run(seed, attributeFromString(attributes.getNamedItem("limit"), 0));
 
                     if (finished) {
@@ -89,6 +95,7 @@ public class Main {
                             e.printStackTrace();
                             exit();
                         }
+                        break;
                     } else {
                         System.out.println("CONTRADICTION");
                     }

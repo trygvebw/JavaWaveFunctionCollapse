@@ -28,8 +28,6 @@ public abstract class WFCModel {
         int argminy = -1;
         int amount;
 
-        random = new Random();
-
         for (int x = 0; x < FMX; x++) {
             for (int y = 0; y < FMY; y++) {
                 if (onBoundary(x, y)) {
@@ -112,7 +110,7 @@ public abstract class WFCModel {
             if (result != null) {
                 return result;
             }
-            while (propagate());
+            while (propagate()) {}
         }
 
         return true;

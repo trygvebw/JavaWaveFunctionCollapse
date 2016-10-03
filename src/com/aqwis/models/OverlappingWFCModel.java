@@ -24,7 +24,8 @@ public class OverlappingWFCModel extends WFCModel {
     int foundation;
 
     protected Boolean propagate() {
-        boolean change = false, b;
+        boolean change = false;
+        boolean b;
         int x2, y2, sx, sy;
         boolean[] allowed;
 
@@ -98,7 +99,7 @@ public class OverlappingWFCModel extends WFCModel {
                     changes[x][y] = true;
                 }
 
-                while (propagate());
+                while (propagate()) {}
             }
         }
     }
@@ -292,7 +293,7 @@ public class OverlappingWFCModel extends WFCModel {
 
             for (int y = ymin; y < ymax; y++) {
                 for (int x = xmin; x < xmax; x++) {
-                    if (!Objects.equals(p1[x + N * y], p2[x - dx + N * (y - dy)])) {
+                    if (!(p1[x + N * y].equals(p2[x - dx + N * (y - dy)]))) {
                         return false;
                     }
                 }
