@@ -233,7 +233,7 @@ public class OverlappingWFCModel extends WFCModel {
             return result;
         };
 
-        Map<Integer, Integer> weights = new HashMap<>();
+        Map<Integer, Integer> weights = new LinkedHashMap<>();
         for (int y = 0; y < (periodicInput ? SMY : SMY - N + 1); y++) {
             for (int x = 0; x < (periodicInput ? SMX : SMX - N + 1); x++) {
                 Byte[][] ps = new Byte[8][];
