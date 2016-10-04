@@ -4,9 +4,6 @@ import java.awt.image.BufferedImage;
 import java.util.Random;
 import java.util.stream.DoubleStream;
 
-/**
- * Created by trygvewiig on 03/10/16.
- */
 public abstract class WFCModel {
     protected boolean[][][] wave;
     protected boolean[][] changes;

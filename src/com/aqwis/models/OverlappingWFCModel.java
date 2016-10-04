@@ -11,9 +11,6 @@ import java.util.function.Function;
 
 import static javafx.application.Platform.exit;
 
-/**
- * Created by trygvewiig on 03/10/16.
- */
 public class OverlappingWFCModel extends WFCModel {
     int[][][][] propagator;
     int N;
