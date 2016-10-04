@@ -27,7 +27,7 @@ public class Main {
     private static Integer attributeFromString(Node item, Integer defaultValue) { return item == null ? defaultValue : Integer.parseInt(item.getNodeValue()); }
     private static String attributeFromString(Node item, String defaultValue) { return item == null ? defaultValue : item.getNodeValue(); }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Random random = new Random();
         File xmlFile = new File("samples.xml");
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
