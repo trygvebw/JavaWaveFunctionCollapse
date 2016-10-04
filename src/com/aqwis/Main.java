@@ -68,7 +68,7 @@ public class Main {
             } else if (nodeName.equals("simpletiled")) {
                 wfcModel = new SimpleTiledWFCModel(
                         attributes.getNamedItem("name").getNodeValue(),
-                        attributes.getNamedItem("subset").getNodeValue(),
+                        attributeFromString(attributes.getNamedItem("subset"), (String) null),
                         attributeFromString(attributes.getNamedItem("width"), 10),
                         attributeFromString(attributes.getNamedItem("height"), 10),
                         attributeFromString(attributes.getNamedItem("periodic"), false),

@@ -1,9 +1,6 @@
 package com.aqwis.models;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 
 import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
@@ -11,8 +8,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.lang.annotation.Native;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,30 +49,32 @@ public class SimpleTiledWFCModel extends WFCModel {
             exit();
         }
 
+        assert document != null;
+
         Node firstChild = document.getFirstChild();
         NamedNodeMap firstChildNodeMap = firstChild.getAttributes();
 
         tilesize = attributeFromString(firstChildNodeMap.getNamedItem("size"), 16);
         boolean unique = attributeFromString(firstChildNodeMap.getNamedItem("unique"), false);
 
-        firstChild = firstChild.getFirstChild(); // xnode
+        List<String> subset = null;
 
-        if (subsetName.isEmpty()) {
-            exit();
-        }
-
-        List<String> subset = new ArrayList<>();
-        NodeList secondaryNodeList = firstChild.getNextSibling().getNextSibling().getChildNodes();
-        for (int i = 0; i < secondaryNodeList.getLength(); i++) {
-            Node subsetNode = secondaryNodeList.item(i);
-            String subsetNodeName = subsetNode.getNodeName();
-            NamedNodeMap subsetNodeMap = subsetNode.getAttributes();
-            if (!subsetNodeName.equals("#comment") && subsetNodeMap.getNamedItem("name").getNodeValue().equals(subsetName)) {
-                NodeList tertiaryNodeList = subsetNode.getChildNodes();
-                for (int j = 0; j < tertiaryNodeList.getLength(); j++) {
-                    Node stile = tertiaryNodeList.item(j);
-                    NamedNodeMap stileNodeMap = stile.getAttributes();
-                    subset.add(stileNodeMap.getNamedItem("name").getNodeValue());
+        if (subsetName != null) {
+            subset = new ArrayList<>();
+            //NodeList secondaryNodeList = firstChild.getNextSibling().getNextSibling().getChildNodes();
+            NodeList subsetList = document.getElementsByTagName("subset");
+            for (int i = 0; i < subsetList.getLength(); i++) {
+                Node subsetNode = subsetList.item(i);
+                String subsetNodeName = subsetNode.getNodeName();
+                NamedNodeMap subsetNodeMap = subsetNode.getAttributes();
+                if (!subsetNodeName.equals("#comment") && subsetNodeMap.getNamedItem("name").getNodeValue().equals(subsetName)) {
+                    //NodeList tertiaryNodeList = subsetNode.getChildNodes();
+                    NodeList subTileList = ((Element) subsetNode).getElementsByTagName("tile");
+                    for (int j = 0; j < subTileList.getLength(); j++) {
+                        Node stile = subTileList.item(j);
+                        NamedNodeMap stileNodeMap = stile.getAttributes();
+                        subset.add(stileNodeMap.getNamedItem("name").getNodeValue());
+                    }
                 }
             }
         }
@@ -101,14 +98,16 @@ public class SimpleTiledWFCModel extends WFCModel {
         List<Integer[]> action = new ArrayList<>();
         Map<String, Integer> firstOccurrence = new HashMap<>();
 
-        NodeList childNodes = firstChild.getChildNodes();
-        for (int i = 0; i < childNodes.getLength(); i++)
+        //NodeList childNodes = firstChild.getChildNodes();
+        Node tilesNode = document.getElementsByTagName("tiles").item(0);
+        NodeList tileNodes = ((Element) tilesNode).getElementsByTagName("tile");
+        for (int i = 0; i < tileNodes.getLength(); i++)
         {
-            Node xtile = childNodes.item(i);
+            Node xtile = tileNodes.item(i);
             NamedNodeMap xtileMap = xtile.getAttributes();
             String tilename = xtileMap.getNamedItem("name").getNodeValue();
 
-            if (!subset.contains(tilename)) {
+            if (subset != null && !subset.contains(tilename)) {
                 continue;
             }
 
@@ -196,6 +195,7 @@ public class SimpleTiledWFCModel extends WFCModel {
         }
 
         T = action.size();
+        stationary = new double[tempStationary.size()];
 
         int i = 0;
         for (Double el : tempStationary) {
@@ -221,10 +221,11 @@ public class SimpleTiledWFCModel extends WFCModel {
             for (int y = 0; y < FMY; y++) wave[x][y] = new boolean[T];
         }
 
-        NodeList further = firstChild.getNextSibling().getChildNodes();
-        for (int k = 0; k < further.getLength(); k++)
+        //NodeList further = firstChild.getNextSibling().getChildNodes();
+        NodeList neighborList = document.getElementsByTagName("neighbor");
+        for (int k = 0; k < neighborList.getLength(); k++)
         {
-            Node xneighbor = further.item(k);
+            Node xneighbor = neighborList.item(k);
             NamedNodeMap xneighborAttributes = xneighbor.getAttributes();
             String leftString = xneighborAttributes.getNamedItem("left").getNodeValue();
             String rightString = xneighborAttributes.getNamedItem("right").getNodeValue();
@@ -232,7 +233,7 @@ public class SimpleTiledWFCModel extends WFCModel {
             String[] left = leftString.split(" ");
             String[] right = rightString.split(" ");
 
-            if ((!subset.contains(left[0]) || !subset.contains(right[0]))) {
+            if (subset != null && (!subset.contains(left[0]) || !subset.contains(right[0]))) {
                 continue;
             }
 

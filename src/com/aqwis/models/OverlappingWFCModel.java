@@ -1,11 +1,10 @@
 package com.aqwis.models;
 
 import javax.imageio.ImageIO;
+import javax.imageio.stream.MemoryCacheImageInputStream;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOError;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -149,10 +148,19 @@ public class OverlappingWFCModel extends WFCModel {
         FMY = height;
         periodic = periodicOutput;
 
-        File imageFile = new File(String.format("samples/%s.bmp", name));
+        File imageFile;
+        try {
+            imageFile = new File(String.format("samples/%s.bmp", name));
+            if (!imageFile.canRead()) {
+                throw new Exception("No such file");
+            }
+        } catch (Exception e) {
+            imageFile = new File(String.format("samples/%s.jpg", name));
+        }
         BufferedImage bitmap = null;
         try {
-            bitmap = ImageIO.read(imageFile);
+            InputStream a = new FileInputStream(imageFile);
+            bitmap = ImageIO.read(new MemoryCacheImageInputStream(a));
         } catch (IOException e) {
             e.printStackTrace();
             exit();
